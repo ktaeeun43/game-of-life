@@ -1,6 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react'
 import produce from 'immer'
-import { SliderPicker } from 'react-color';
 
 import './App.css';
 
@@ -51,27 +50,27 @@ function App() {
         return produce(g, gridCopy => {
            
           for (let i = 0; i < numRows; i++) {
-            for (let k = 0; k < numCols; k++) {
+            for (let j = 0; j < numCols; j++) {
               let neighbors = 0;
 
               
               operations.forEach(([x, y]) => {
                 const newI = i + x
-                const newK = k + y
+                const newKJ= j + y
                 
-                if (newI >= 0 && newI < numRows && newK >= 0 && newK < numCols) {
-                  neighbors += g[newI][newK]
+                if (newI >= 0 && newI < numRows && newKJ >= 0 && newKJ < numCols) {
+                  neighbors += g[newI][newKJ]
                 }
               })
 
               
               
               if (neighbors < 2 || neighbors > 3) {
-                gridCopy[i][k] = 0;
+                gridCopy[i][j] = 0;
               }
               
-              else if (g[i][k] === 0 && neighbors === 3) {
-                gridCopy[i][k] = 1;
+              else if (g[i][j] === 0 && neighbors === 3) {
+                gridCopy[i][j] = 1;
               }
               
             
@@ -91,9 +90,9 @@ function App() {
   }
   
   
-  function handleNodeClick(i,k) {
+  function handleNodeClick(i,j) {
     const newGrid = produce(grid, gridCopy => {
-    gridCopy[i][k] = !grid[i][k] })
+    gridCopy[i][j] = !grid[i][j] })
     setGrid(newGrid) 
   }
 
@@ -157,14 +156,6 @@ function App() {
         <a  className="randomizeBtn" onClick={handleRandomizeGrid}>
           랜덤
         </a>
-
-        <SliderPicker className="colorPicker"
-          color={color}
-          onChangeComplete={(color) => {
-            setColor(color.hex)
-          }}
-        />
-
         
       </div>
     
@@ -174,15 +165,15 @@ function App() {
           gridTemplateColumns: `repeat(${numCols}, 20px)`
         }}>
         {grid.map((rows, i) => 
-          rows.map((col, k) => 
+          rows.map((col, j) => 
             <div className="node"
-            key={`${i}-${k}`}
-            onClick={() => handleNodeClick(i,k)}
+            key={`${i}-${j}`}
+            onClick={() => handleNodeClick(i,j)}
             style={{
               width: 20,
               height: 20,
               border: 'solid 1px grey',
-              backgroundColor: grid[i][k] ? color : undefined
+              backgroundColor: grid[i][j] ? color : undefined
             }} 
             />
           ))}
