@@ -1,7 +1,35 @@
 import React, { useState, useRef, useCallback } from 'react'
 import produce from 'immer'
+import styled from 'styled-components';
+import Grid from './Grid';
 
-import './App.css';
+const TitleWrapper = styled.div`
+display: flex;
+justify-content: center;
+`;
+
+const Title = styled.div`
+font-size: 30px;
+font-weight: bold;
+color: blue;
+`;
+
+const ButtonWrapper = styled.div`
+display: flex;
+justify-content: center;
+`;
+
+const Buttons = styled.button`
+  font-weight: bold;
+  text-align: center;
+  font-size: 15px;
+  padding: 2px 25px;
+  border-radius: 5px;
+  margin-right: 10px;
+  padding-left: 40px;
+  opacity: 1;
+`;
+
 
 const numRows = 70;
 const numCols = 70;
@@ -90,7 +118,7 @@ function App() {
   }
   
   
-  function handleNodeClick(i,j) {
+  function handleCellClick(i,j) {
     const newGrid = produce(grid, gridCopy => {
     gridCopy[i][j] = !grid[i][j] })
     setGrid(newGrid) 
@@ -105,6 +133,13 @@ function App() {
     setGrid(rows)
   }
 
+  function handleClearButton() {
+    setGrid(generateEmptyGrid())
+          setRunning(false);
+          if(running) {
+            runningRef.current = false
+          }
+  }
   
   function handleDeathMode() {
       if (counter < 4) {
@@ -120,46 +155,30 @@ function App() {
       }
   }
 
+
   
   return (
-    <div className="page">
-      <div className="title" 
-        onClick={() => handleDeathMode()}
-        style={{
-          color: "#1860B6"
-      }}>
-        <h1>
-          라이프게임
-        </h1>
-      </div>
+    <>
+    <TitleWrapper>
+      <Title>
+        라이프 게임
+      </Title>
+    </TitleWrapper>
 
-      <div className="btns">
-        <a  className="startBtn" 
-          style={{
-            backgroundColor: "#1860B6",
-            color: "#fff"
-          }} 
+      <ButtonWrapper>
+        <Buttons 
           onClick={handleStartSimulation}> 
         {running ? "STOP" : "START"} 
-        </a>
+        </Buttons>
 
-        <a  className="clearBtn" onClick={() => {
-          setGrid(generateEmptyGrid())
-          setRunning(false);
-          if(running) {
-            runningRef.current = false
-          }
-        }}> 
+        <Buttons onClick={handleClearButton}> 
           삭제
-        </a>
+        </Buttons>
 
-        <a  className="randomizeBtn" onClick={handleRandomizeGrid}>
+        <Buttons onClick={handleRandomizeGrid}>
           랜덤
-        </a>
-        
-      </div>
-    
-
+        </Buttons>
+      </ButtonWrapper>
       <div className="grid" style={{
           display: 'grid',
           gridTemplateColumns: `repeat(${numCols}, 20px)`
@@ -168,7 +187,7 @@ function App() {
           rows.map((col, j) => 
             <div className="node"
             key={`${i}-${j}`}
-            onClick={() => handleNodeClick(i,j)}
+            onClick={() => handleCellClick(i,j)}
             style={{
               width: 20,
               height: 20,
@@ -178,7 +197,7 @@ function App() {
             />
           ))}
       </div>
-    </div>
+      </>
   );
 }
 
